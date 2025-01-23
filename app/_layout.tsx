@@ -48,12 +48,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DefaultTheme}>
-      <Stack initialRouteName='(auth)/login/index'>
-        {user && (
-          <Stack.Screen name="index" options={{headerShown: false}} />
-        )}
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <Stack initialRouteName='index' screenOptions={{headerShown: false}}/>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
