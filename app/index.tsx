@@ -32,12 +32,9 @@ export default function HomeScreen() {
   return (
     <View style={homeStyles.container}>
       <Text style={homeStyles.center}>React Native - Alternova</Text>
-      {/* {sortElements(arr).map((item, index) => (
-        <Text key={index}>{item.height}</Text>
-      ))} */}
 
       <View style={homeStyles.table}>
-        <Text style={homeStyles.title}>Lista de Pokémon</Text>
+        <Text style={homeStyles.title}>No favoritos</Text>
         <FlatList
           data={pokemons}
           keyExtractor={(item:PokemonItem) => `${item.name}-list`}
@@ -54,7 +51,7 @@ export default function HomeScreen() {
       </View>
 
       <View style={homeStyles.table}>
-        <Text style={homeStyles.title}>Mis Pokémon Favoritos</Text>
+        <Text style={homeStyles.title}>Favoritos</Text>
         <FlatList
           data={favorites}
           keyExtractor={(item: PokemonItem) => `${item.name}-favorite`}
