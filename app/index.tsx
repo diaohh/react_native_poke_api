@@ -10,11 +10,11 @@ export default function HomeScreen() {
   const { logOut } = useAuth();
   const {
     pokemons,
-    setPokemons,
     favorites,
-    setFavorites,
     loading,
-    getNextPokemons
+    getNextPokemons,
+    addFavorite,
+    removeFavorite
   } = usePokemon()
 
   const arr = [...Array(20)].map(() => {
@@ -30,37 +30,33 @@ export default function HomeScreen() {
         <Text key={index}>{item.height}</Text>
       ))} */}
       
-      <View>
-        <Text>Lista de Pokémon</Text>
+      <View style={styles.table}>
+        <Text style={styles.title}>Lista de Pokémon</Text>
         <FlatList
           data={pokemons}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item:any) => `${item.name}-list`}
           renderItem={({ item }) => (
             <TouchableOpacity
-              key={item.name}
-              onPress={() => {
-                setFavorites([...favorites, item.name]);
-                setPokemons(pokemons.filter((e) => e !== item.name))
-              }}
+              style={styles.row}
+              onPress={() => {addFavorite(item.name)}}
             >
-              <Text>{item.name}</Text>
+              <Text style={styles.pokemonName}>{item.name}</Text>
             </TouchableOpacity>
           )}
         />
+      </View>
 
-        <Text>Mis Pokémon Favoritos</Text>
+      <View style={styles.table}>
+        <Text style={styles.title}>Mis Pokémon Favoritos</Text>
         <FlatList
           data={favorites}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item:any) => `${item.name}-favorite`}
           renderItem={({ item }) => (
             <TouchableOpacity
-              key={item.name}
-              onPress={() => {
-                setPokemons([...pokemons, item.name]);
-                setFavorites(favorites.filter((e) => e !== item.name))
-              }}
+              style={styles.row}
+              onPress={() => {removeFavorite(item.name)}}
             >
-              <Text>{item.name}</Text>
+              <Text style={styles.pokemonName}>{item.name}</Text>
             </TouchableOpacity>
           )}
           style={styles.list}
@@ -77,7 +73,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
+  table: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
   center: {
     textAlign: 'center'
-  }
-})
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center'
+  },
+  list: {
+    marginBottom: 20,
+  },
+  row: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  pokemonName: {
+    fontSize: 16,
+  },
+});
