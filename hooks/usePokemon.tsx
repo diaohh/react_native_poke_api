@@ -1,5 +1,6 @@
 import { getPokemons } from "@/services/pokemonSvc";
 import { useEffect, useState } from "react";
+import { sortElements } from '@/utils';
 
 interface PokemonItem {
   name: string;
@@ -19,34 +20,36 @@ export const usePokemon = () => {
 
   const getNextPokemons = () => {
     setLoading(true);
-    getPokemons(nextUrl)
-      .then((res) => {
-        res.data.results.map((e:any) => getPokemonData(e.url))
+    getPokemons()
+      .then(async (res) => {
+        setPokemons(
+          sortElements(
+            await Promise.all(
+              res.data.results.map((e:any) => getPokemonData(e.url))
+            )
+          )
+        ) 
         setNextUrl(res.data.next);
       })
       .finally(() => setLoading(false));
     };
     
   const getPokemonData = async (pokemonUrl:string) => {
-    return await getPokemons(pokemonUrl).then((pokemon) => {
-      setPokemons([
-        ...pokemons,
-        {
-          name: pokemon.data.name,
-          height: pokemon.data.height,
-          img: pokemon.data.sprites.front_default
-        }
-      ]);
-    })
+    const pokemon = await getPokemons(pokemonUrl)
+    return {
+      name: pokemon.data.name,
+      height: pokemon.data.height,
+      img: pokemon.data.sprites.front_default
+    }
   }
 
   const addFavorite = (pokemonData: PokemonItem) => {
-    setFavorites([...favorites, pokemonData]);
+    setFavorites(sortElements([...favorites, pokemonData]));
     setPokemons(pokemons.filter((e) => e.name !== pokemonData.name));
   };
 
   const removeFavorite = (pokemonData: PokemonItem) => {
-    setPokemons([...pokemons, pokemonData]);
+    setPokemons(sortElements([...pokemons, pokemonData]));
     setFavorites(favorites.filter((e) => e.name !== pokemonData.name));
   };
 
