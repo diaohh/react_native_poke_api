@@ -34,14 +34,17 @@ export default function RootLayout() {
 
   }, [loaded]);
 
+  useEffect(() => {
+    if(loaded){
+      if(!user && segments[0] !== '(auth)') router.push("/login")
+      else if(user && segments[0] === '(auth)') router.push("/")
+    }
+  }, [segments, user, loaded])
+
   if (!loaded) {
     return null;
   }
 
-  useEffect(() => {
-    if(!user && segments[0] !== '(auth)') router.push("/login")
-    if(user && segments[0] === '(auth)') router.push("/")
-  }, [segments, user])
 
   return (
     <ThemeProvider value={DefaultTheme}>
