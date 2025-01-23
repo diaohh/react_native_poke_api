@@ -1,6 +1,7 @@
-import { View, Text, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from "react-native";
-import React from 'react'
+import { View, Text, TextInput, ActivityIndicator, KeyboardAvoidingView, TouchableOpacity, Image } from "react-native";
+import React, { useState } from 'react'
 import { useAuth } from "@/hooks/useAuth";
+import { loginStyles } from "@/styles/loginStyles";
 
 const LoginPage = () => {
   const {
@@ -10,35 +11,64 @@ const LoginPage = () => {
     setPassword,
     loading,
     logIn,
-    register
+    register,
   } = useAuth();
 
+  const [isLogin, setIsLogin] = useState(true);
+
   return (
-    <View>
-      <Text>Login</Text>
-      <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={loginStyles.container}
+    >
+      <View style={loginStyles.card}>
+        <View style={loginStyles.title}>
+          <Image style={loginStyles.icon} source={require('../../../assets/images/PokeballIcon.png')} />
+          <Text style={loginStyles.titleLabel}>{isLogin ? "Iniciar sesión" : "Registrarse"}</Text>
+        </View>
         <TextInput
-          placeholder="Correo Electronico"
+          style={loginStyles.input}
+          placeholder="Correo Electrónico"
           value={email}
           onChangeText={(value) => setEmail(value)}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
-          secureTextEntry={true}
+          style={loginStyles.input}
+          secureTextEntry
           placeholder="Contraseña"
           value={password}
           onChangeText={(value) => setPassword(value)}
         />
-        { loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#E53935" />
         ) : (
-          <>
-            <Button title="Iniciar sesión" onPress={() => logIn()} />
-            <Button title="Registrarse" onPress={() => register()} />
-          </>
+          <TouchableOpacity
+            style={loginStyles.button}
+            onPress={() => (isLogin ? logIn() : register())}
+          >
+            <Text style={loginStyles.buttonText}>
+              {isLogin ? "Iniciar sesión" : "Registrarse"}
+            </Text>
+          </TouchableOpacity>
         )}
-      </KeyboardAvoidingView>
-    </View>
-  )
+
+        <TouchableOpacity
+          onPress={() => setIsLogin(!isLogin)}
+          style={loginStyles.toggle}
+        >
+          <Text style={loginStyles.toggleText}>
+            {isLogin ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?"}
+          </Text>
+          <Text style={loginStyles.toggleLink}>
+            {isLogin ? "Presiona aquí para registrarte" : "Presiona aquí para iniciar sesión"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  );
 };
 
 export default LoginPage;
