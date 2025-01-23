@@ -38,6 +38,10 @@ export const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  pokemonImage: {
+    height: 30,
+    width: 30
+  },
   pokemonName: {
     fontSize: 16,
     color: '#333',
