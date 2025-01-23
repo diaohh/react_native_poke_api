@@ -4,7 +4,12 @@ import { Link } from "expo-router";
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
 import { usePokemon } from '@/hooks/usePokemon';
+import { homeStyles } from '@/styles/homeStyles';
 
+interface PokemonItem {
+  name: string;
+  url: string;
+}
 
 export default function HomeScreen() {
   const { logOut } = useAuth();
@@ -24,80 +29,48 @@ export default function HomeScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.center}>React Native - Alternova</Text>
+    <View style={homeStyles.container}>
+      <Text style={homeStyles.center}>React Native - Alternova</Text>
       {/* {sortElements(arr).map((item, index) => (
         <Text key={index}>{item.height}</Text>
       ))} */}
-      
-      <View style={styles.table}>
-        <Text style={styles.title}>Lista de Pokémon</Text>
+
+      <View style={homeStyles.table}>
+        <Text style={homeStyles.title}>Lista de Pokémon</Text>
         <FlatList
           data={pokemons}
-          keyExtractor={(item:any) => `${item.name}-list`}
+          keyExtractor={(item:PokemonItem) => `${item.name}-list`}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.row}
-              onPress={() => {addFavorite(item.name)}}
+              style={homeStyles.row}
+              onPress={() => addFavorite(item)}
             >
-              <Text style={styles.pokemonName}>{item.name}</Text>
+              <Text style={homeStyles.pokemonName}>{item.name}</Text>
             </TouchableOpacity>
           )}
         />
       </View>
 
-      <View style={styles.table}>
-        <Text style={styles.title}>Mis Pokémon Favoritos</Text>
+      <View style={homeStyles.table}>
+        <Text style={homeStyles.title}>Mis Pokémon Favoritos</Text>
         <FlatList
           data={favorites}
-          keyExtractor={(item:any) => `${item.name}-favorite`}
+          keyExtractor={(item: PokemonItem) => `${item.name}-favorite`}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.row}
-              onPress={() => {removeFavorite(item.name)}}
+              style={homeStyles.row}
+              onPress={() => removeFavorite(item)}
             >
-              <Text style={styles.pokemonName}>{item.name}</Text>
+              <Text style={homeStyles.pokemonName}>{item.name}</Text>
             </TouchableOpacity>
           )}
-          style={styles.list}
+          style={homeStyles.list}
         />
       </View>
 
-      <Button title="Cerrar sesión" onPress={() => logOut()} />
+      <TouchableOpacity style={homeStyles.button} onPress={() => logOut()}>
+        <Text style={homeStyles.buttonText}>Cerrar sesión</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    flex: 1,
-  },
-  table: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  center: {
-    textAlign: 'center'
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center'
-  },
-  list: {
-    marginBottom: 20,
-  },
-  row: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  pokemonName: {
-    fontSize: 16,
-  },
-});
