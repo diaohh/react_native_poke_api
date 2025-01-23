@@ -1,38 +1,51 @@
 import { getPokemons } from "@/services/pokemonSvc";
 import { useEffect, useState } from "react";
 
+interface PokemonItem {
+  name: string;
+  height: number;
+  img: string;
+}
+
 export const usePokemon = () => {
-  const [pokemons, setPokemons] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [pokemons, setPokemons] = useState<Array<PokemonItem>>([]);
+  const [favorites, setFavorites] = useState<Array<PokemonItem>>([]);
   const [nextUrl, setNextUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    getPokemons()
-      .then((res) => {
-        setPokemons(res.data.results);
-        setNextUrl(res.data.next);
-      })
-      .finally(() => setLoading(false));
+    getNextPokemons()
   }, []);
 
   const getNextPokemons = () => {
     setLoading(true);
     getPokemons(nextUrl)
       .then((res) => {
-        setPokemons(pokemons.concat(res.data.results));
+        res.data.results.map((e:any) => getPokemonData(e.url))
         setNextUrl(res.data.next);
       })
       .finally(() => setLoading(false));
-  };
+    };
+    
+  const getPokemonData = async (pokemonUrl:string) => {
+    return await getPokemons(pokemonUrl).then((pokemon) => {
+      setPokemons([
+        ...pokemons,
+        {
+          name: pokemon.data.name,
+          height: pokemon.data.height,
+          img: pokemon.data.sprites.front_default
+        }
+      ]);
+    })
+  }
 
-  const addFavorite = (pokemonData: {name: string, url: string}) => {
+  const addFavorite = (pokemonData: PokemonItem) => {
     setFavorites([...favorites, pokemonData]);
     setPokemons(pokemons.filter((e) => e.name !== pokemonData.name));
   };
 
-  const removeFavorite = (pokemonData: {name: string, url: string}) => {
+  const removeFavorite = (pokemonData: PokemonItem) => {
     setPokemons([...pokemons, pokemonData]);
     setFavorites(favorites.filter((e) => e.name !== pokemonData.name));
   };

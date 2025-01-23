@@ -1,5 +1,5 @@
 import { sortElements } from '@/utils';
-import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Link } from "expo-router";
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
@@ -8,7 +8,8 @@ import { homeStyles } from '@/styles/homeStyles';
 
 interface PokemonItem {
   name: string;
-  url: string;
+  height: number;
+  img: string;
 }
 
 export default function HomeScreen() {
@@ -46,6 +47,7 @@ export default function HomeScreen() {
               onPress={() => addFavorite(item)}
             >
               <Text style={homeStyles.pokemonName}>{item.name}</Text>
+              <Image style={homeStyles.pokemonImage} source={{uri: item.img}} />
             </TouchableOpacity>
           )}
         />
@@ -62,7 +64,8 @@ export default function HomeScreen() {
               onPress={() => removeFavorite(item)}
             >
               <Text style={homeStyles.pokemonName}>{item.name}</Text>
-            </TouchableOpacity>
+              <Image style={homeStyles.pokemonImage} source={{uri: item.img}} />
+              </TouchableOpacity>
           )}
           style={homeStyles.list}
         />
